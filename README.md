@@ -1,9 +1,9 @@
-# nur-packages
+# honeycomb
 
 **My personal [NUR](https://github.com/nix-community/NUR) repository**
 
-[![Build and populate cache](https://github.com/mirdukkkkk/nur-packages/actions/workflows/build.yml/badge.svg)](https://github.com/mirdukkkkk/nur-packages/actions/workflows/build.yml)
-[![Update sources](https://github.com/mirdukkkkk/nur-packages/actions/workflows/update.yml/badge.svg)](https://github.com/mirdukkkkk/nur-packages/actions/workflows/update.yml)
+[![Build and populate cache](https://github.com/mirdukkkkk/honeycomb/actions/workflows/build.yml/badge.svg)](https://github.com/mirdukkkkk/honeycomb/actions/workflows/build.yml)
+[![Update sources](https://github.com/mirdukkkkk/honeycomb/actions/workflows/update.yml/badge.svg)](https://github.com/mirdukkkkk/honeycomb/actions/workflows/update.yml)
 [![Cachix Cache](https://img.shields.io/badge/cachix-mirdukkkkk-blue.svg)](https://mirdukkkkk.cachix.org)
 
 > [!WARNING]
@@ -41,10 +41,10 @@ programs.firefox.profiles.default.extensions.packages =
 ### As a flake input
 
 ```nix
-inputs.mirdukkkkk-nur.url = "github:mirdukkkkk/nur-packages";
+inputs.honeycomb.url = "github:mirdukkkkk/honeycomb";
 
 # then
-inputs.mirdukkkkk-nur.legacyPackages.${system}.molten
+inputs.honeycomb.legacyPackages.${system}.molten
 ```
 
 ### Binary cache
