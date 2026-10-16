@@ -1,37 +1,65 @@
-# nur-packages-template
-
-**A template for [NUR](https://github.com/nix-community/NUR) repositories**
-
-## Setup
-
-1. Click on [Use this template](https://github.com/nix-community/nur-packages-template/generate) to start a repo based on this template. (Do _not_ fork it.)
-2. Add your packages to the [pkgs](./pkgs) directory and to
-   [default.nix](./default.nix)
-   * Remember to mark the broken packages as `broken = true;` in the `meta`
-     attribute, or travis (and consequently caching) will fail!
-   * Library functions, modules and overlays go in the respective directories
-3. Choose your CI: Depending on your preference you can use github actions (recommended) or [Travis ci](https://travis-ci.com).
-   - Github actions: Change your NUR repo name and optionally add a cachix name in [.github/workflows/build.yml](./.github/workflows/build.yml) and change the cron timer
-     to a random value as described in the file
-   - Travis ci: Change your NUR repo name and optionally your cachix repo name in 
-   [.travis.yml](./.travis.yml). Than enable travis in your repo. You can add a cron job in the repository settings on travis to keep your cachix cache fresh
-5. Change your travis and cachix names on the README template section and delete
-   the rest
-6. [Add yourself to NUR](https://github.com/nix-community/NUR#how-to-add-your-own-repository)
-
-## README template
-
 # nur-packages
 
 **My personal [NUR](https://github.com/nix-community/NUR) repository**
 
-<!-- Remove this if you don't use github actions -->
-![Build and populate cache](https://github.com/<YOUR-GITHUB-USER>/nur-packages/workflows/Build%20and%20populate%20cache/badge.svg)
+[![Build and populate cache](https://github.com/mirdukkkkk/nur-packages/actions/workflows/build.yml/badge.svg)](https://github.com/mirdukkkkk/nur-packages/actions/workflows/build.yml)
+[![Update sources](https://github.com/mirdukkkkk/nur-packages/actions/workflows/update.yml/badge.svg)](https://github.com/mirdukkkkk/nur-packages/actions/workflows/update.yml)
+[![Cachix Cache](https://img.shields.io/badge/cachix-mirdukkkkk-blue.svg)](https://mirdukkkkk.cachix.org)
 
-<!--
-Uncomment this if you use travis:
+> [!WARNING]
+> **Bleeding edge.** Everything here is built against `nixpkgs-unstable`, and sources are
+> bumped automatically every day: `flake.lock` and the Firefox add-ons are regenerated
+> and pushed by CI without manual review. A package can break or change between two
+> evaluations. Pin this repository to a known-good revision if you need stability.
 
-[![Build Status](https://travis-ci.com/<YOUR_TRAVIS_USERNAME>/nur-packages.svg?branch=master)](https://travis-ci.com/<YOUR_TRAVIS_USERNAME>/nur-packages)
--->
-[![Cachix Cache](https://img.shields.io/badge/cachix-<YOUR_CACHIX_CACHE_NAME>-blue.svg)](https://<YOUR_CACHIX_CACHE_NAME>.cachix.org)
+## Packages
 
+| Attribute | Description |
+| --- | --- |
+| `molten` | Protobuf-based stream format and renderer for collaborative pixel canvases ([pixelate-it/molten](https://github.com/pixelate-it/molten)) |
+| `firefox-addons.indicatetls` | Shows the negotiated TLS version in the address bar |
+| `firefox-addons.preact-devtools` | Preact developer tools |
+| `firefox-addons.resourceoverride` | Override website resources with your own |
+
+The add-on list lives in [`pkgs/firefox-addons/addons.json`](./pkgs/firefox-addons/addons.json);
+`generated.nix` is produced from it by
+[mozilla-addons-to-nix](https://git.sr.ht/~rycee/mozilla-addons-to-nix).
+
+## Usage
+
+### Through NUR
+
+```nix
+# with the NUR overlay applied
+environment.systemPackages = [ pkgs.nur.repos.mirdukkkkk.molten ];
+
+# home-manager
+programs.firefox.profiles.default.extensions.packages =
+  with pkgs.nur.repos.mirdukkkkk.firefox-addons; [ preact-devtools ];
+```
+
+### As a flake input
+
+```nix
+inputs.mirdukkkkk-nur.url = "github:mirdukkkkk/nur-packages";
+
+# then
+inputs.mirdukkkkk-nur.legacyPackages.${system}.molten
+```
+
+### Binary cache
+
+Prebuilt packages are pushed to Cachix. Firefox add-ons are not cached, since they are
+plain downloads.
+
+```nix
+nix.settings = {
+  substituters = [ "https://mirdukkkkk.cachix.org" ];
+  trusted-public-keys = [ "mirdukkkkk.cachix.org-1:DWyywfS24EqoOutAfzL+oL1SdrdBrG7SAtpNkG+xuvs=" ];
+};
+```
+
+## License
+
+The Nix expressions in this repository are [MIT](./LICENSE). Each package keeps the
+license of its upstream project, see its `meta.license`.
